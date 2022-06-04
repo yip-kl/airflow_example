@@ -1,0 +1,23 @@
+# This file allows you to configure Airflow Connections, Pools, and Variables in a single place for local development only.
+# NOTE: If putting a dict in conn_extra, please wrap in single quotes.
+
+# For more information, refer to our docs: https://docs.astronomer.io/develop-project#configure-airflow_settingsyaml-local-development-only
+# For issues or questions, reach out to: https://support.astronomer.io
+
+airflow:
+  connections:
+    - conn_id: 'google_cloud_default'
+      conn_type: 'google_cloud_platform'
+      conn_host:
+      conn_schema:
+      conn_login:
+      conn_password:
+      conn_port:
+      conn_extra: '{"extra__google_cloud_platform__project":"PROJECT_ID","extra__google_cloud_platform__scope": "https://www.googleapis.com/auth/cloud-platform","extra__google_cloud_platform__key_path":"include/credentials/KEY_FILE"}'
+  pools:
+    - pool_name:
+      pool_slot:
+      pool_description:
+  variables:
+    - variable_name:
+      variable_value:

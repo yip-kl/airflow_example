@@ -1,0 +1,9 @@
+astro
+.git
+.env
+airflow_settings.yaml
+logs/
+
+# Additional
+config_samples
+**/__pycache__
