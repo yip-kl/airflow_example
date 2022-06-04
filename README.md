@@ -1,6 +1,8 @@
 Overview
 ========
 
+This is a sample project for local Airflow development making use of the `astro` cli. Please refer to [Astronomer's git](https://github.com/astronomer/astro-cli) about how to install astro in the first place
+
 Welcome to Astronomer! This project was generated after you ran 'astro dev init' using the Astronomer CLI. This readme describes the contents of the project, as well as how to run Apache Airflow on your local machine.
 
 Project Contents
@@ -47,7 +49,6 @@ The Astronomer CLI is maintained with love by the Astronomer team. To report a b
 
 My notes
 ========
-This is a sample project for local Airflow development making use of the `astro` cli. Please refer to [Astronomer's git](https://github.com/astronomer/astro-cli) about how to install astro in the first place
 
 ## Development
 - cd to the project root, and use `astro dev start` to spin up the containers while Docker Desktop is active
