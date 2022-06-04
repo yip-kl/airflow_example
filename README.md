@@ -47,6 +47,8 @@ The Astronomer CLI is maintained with love by the Astronomer team. To report a b
 
 My notes
 ========
+This is a sample project for local Airflow development making use of the `astro` cli. Please refer to [Astronomer's git](https://github.com/astronomer/astro-cli) about how to install astro in the first place
+
 ## Development
 - cd to the project root, and use `astro dev start` to spin up the containers while Docker Desktop is active
 - To speed up development, attach to webserver container via VSCode Remote Explorer, navigate to `/usr/local/airflow/` and directly update the dags there. This would be picked up by the web server very quickly
