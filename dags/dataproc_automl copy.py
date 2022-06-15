@@ -13,7 +13,7 @@ local_tz = pendulum.timezone('Asia/Hong_Kong')
 default_args = {
     'retries': 0,
     'catchup': False,
-    'start_date': datetime(2022, 6, 15, 21, 0, tzinfo=local_tz),
+    'start_date': datetime(2022, 6, 18, 21, 0, tzinfo=local_tz),
     'email': [Variable.get("recipient_address")],
     'email_on_failure': False,
 }
@@ -22,7 +22,7 @@ project_id = 'adroit-hall-301111'
 dataset_id = 'demo'
 region = 'us-central1' ## try passing this as default args?
        
-with DAG('dataproc_automl', description='',
+with DAG('dataproc_automl_backup', description='',
         schedule_interval='0 22 * * *',
         default_args=default_args) as dag:
          
@@ -50,8 +50,27 @@ with DAG('dataproc_automl', description='',
       region=region,
       batch_id=f'batch_{round(arrow.utcnow().timestamp())}',
       batch={
+        "pysparkBatch": {
+          "jarFileUris": [
+            "gs://spark-lib/bigquery/spark-bigquery-with-dependencies_2.12-0.25.0.jar"
+          ],
+          "mainPythonFileUri": "gs://dataproc-staging-us-central1-712368347106-boh5iflc/notebooks/jupyter/MLinPython/pyspark/pyspark_batch.py"
+        },
         "labels": {},
-        "name": "projects/adroit-hall-301111/locations/us-central1/batches/batch-abc"
+        "name": "projects/adroit-hall-301111/locations/us-central1/batches/batch-0478",
+        "runtimeConfig": {
+          "properties": {
+            "spark.executor.instances": "2",
+            "spark.driver.cores": "4",
+            "spark.executor.cores": "4",
+            "spark.app.name": "projects/adroit-hall-301111/locations/us-central1/batches/batch-e3c0"
+          }
+        },
+        "environmentConfig": {
+          "executionConfig": {
+            "subnetworkUri": "default"
+          }
+        }
       }
     )
 
@@ -80,6 +99,6 @@ with DAG('dataproc_automl', description='',
         }
     )
 
-    t2 >> t3 >> t4
+    t1 >> t2 >> t3 >> t4
 
 
