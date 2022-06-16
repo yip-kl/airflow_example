@@ -198,3 +198,6 @@ google.api_core.exceptions.InvalidArgument: 400 Multiple validation errors:
 [2022-06-15, 21:48:35 HKT] {taskinstance.py:1170} DEBUG - <TaskInstance: dataproc_automl.batch_predict_task manual__2022-06-15T13:48:30.888789+00:00 [None]> dependency 'Previous Dagrun State' PASSED: True, The task did not have depends_on_past set.
 [2022-06-15, 21:48:35 HKT] {events.py:43} DEBUG - session flush listener: added ['upstream_failed'] unchanged () deleted [None] - <TaskInstance: dataproc_automl.polling manual__2022-06-15T13:48:30.888789+00:00 [upstream_failed]>
 [2022-06-15, 21:48:35 HKT] {local_task_job.py:273} INFO - 0 downstream tasks scheduled from follow-on schedule check
+
+https://github.com/googleapis/python-dataproc/blob/main/google/cloud/dataproc_v1/types/batches.py
+https://github.com/googleapis/python-dataproc/blob/main/google/cloud/dataproc_v1/services/batch_controller/client.py
