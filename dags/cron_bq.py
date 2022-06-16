@@ -23,11 +23,11 @@ with DAG('scheduled_query', description='',
         # Refer to this for configuration specification 
         configuration={
             'query': {
-                'query': 'SELECT * FROM `adroit-hall-301111.demo.pubsub_dataflow`',
+                'query': 'QUERY',
                 'destinationTable': {
-                    "projectId": 'adroit-hall-301111',
-                    "datasetId": 'demo',
-                    "tableId": 'pubsub_dataflow'
+                    "projectId": 'PROJECT_ID',
+                    "datasetId": 'DATASET_ID',
+                    "tableId": 'TABLE_ID'
                 },
                 'writeDisposition': 'WRITE_APPEND',
                 'createDisposition': 'CREATE_IF_NEEDED',
