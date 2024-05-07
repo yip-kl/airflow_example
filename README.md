@@ -52,7 +52,12 @@ My notes
 
 ## Development
 - cd to the project root, and use `astro dev start` to spin up the containers while Docker Desktop is active
-- To speed up development, attach to webserver container via VSCode Remote Explorer, navigate to `/usr/local/airflow/` and directly update the dags there. This would be picked up by the web server very quickly
+- Best pracices:
+    1. **Proper library import**: Instead of adding DAGs in the local repo which might not have `airflow` installed, attach to webserver container via VSCode Remote Explorer, navigate to `/usr/local/airflow/` and directly update the dags there. The container has `airflow` library installed and thus enabling syntax-highlighting, code navigation, etc. to work. Updates in the container will be reflected in the local repo, and thus can be source-controlled properly without copy-pasting back and forth. (Actually, it works as well the other way round)
+    2. **DAGs parsing and rendering**: To see if the DAGs can be parsed and imported properly, we can:
+        - **Parsing**: Run `astro dev parse` in the local machine to see if DAGs can be parsed correctly. This is faster than importing and checking on the UI
+        - **Import**: Once the above is ok, run `astro dev run dags reserialize` (Equivalent to running `airflow dags reserialize` in webserver) to refresh DAGs immediately.
+    3. **Test DAGs**: Follow this [doc](https://docs.astronomer.io/learn/testing-airflow)
 - `AIRFLOW__LOGGING__LOGGING_LEVEL` is set as `DEBUG` in the Dockerfile to make debugging easier
 - These are useful commands for development:
     - `astro dev restart`: rebuild the container e.g. after you have added new items under requirements.txt
@@ -64,10 +69,14 @@ My notes
 - Sample environment variables can be referred from `config_samples/sample.env`, copy them to `.env` and update the values as needed
 ## Connections
 - GCP: To connect to GCP for local development, `GOOGLE_APPLICATION_CREDENTIALS` is defined in the .env file for Application Default Credentials, and `AIRFLOW_CONN_GOOGLE_CLOUD_DEFAULT` is also defined so that Airflow can infer conn_id `google_cloud_default` from the Application Default Credentials. Please see [here](https://airflow.apache.org/docs/apache-airflow-providers-google/stable/connections/gcp.html) for more details
-    - Alternatively, connection to GCP can be done by explicitly declaring this in Admin -> Connection. A sample ```config_samples/airflow_settings_sample.yaml``` is included to demonstrate how to do this as code. For such update to be effective, please remove the existing connection under Admin -> Connection first, then rebuild the container
+    - Alternatively, connection to GCP can be done by explicitly declaring this in Admin -> Connection. A sample `config_samples/airflow_settings_sample.yaml` is included to demonstrate how to do this as code. For such update to be effective, please remove the existing connection under Admin -> Connection first, then rebuild the container
 - SendGrid: For local development purpose, connections to which is defined in the .env file. If we are using Cloud Composer, it should be done by overriding the Airflow configuration options. See [here](https://cloud.google.com/composer/docs/composer-2/configure-email)
-## Triggers
-- Scheduled run will happen after 1 scheduled_interval. Say if you created a DAG with start_date = 2010-01-01 and to run 2pm every day, the DAG will run immediately upon getting detected by Airflow even `catchup` is set as False. If you don't to execute it right away, you should set catchup=false and start_date to a future date
-- DAG with a future start_date cannot be run. Say if you have a DAG with start_date = 2040-01-01, the tasks included in the DAG won't run even if you trigger the DAG manually
-## GCP-specific
+
+## Particulars about Airflow
+### Scheduling
+- Scheduled run will happen after 1 scheduled_interval. Say if you created a DAG with start_date = 2010-01-01 and to run 2pm every day, the DAG will run immediately upon getting detected by Airflow even `catchup` is set as False (see below). If you don't to execute it right away, you should set catchup=false and start_date to a future date
+- DAG with a future `start_date` cannot be run. Say if you have a DAG with start_date = 2040-01-01, the tasks included in the DAG won't run even if you trigger the DAG manually
+### Scheduling
+- `catchup=False` is only effective at dag level. Also, when a dag has catchup=False, the max value from the earliest possible execution_date and the end of the last execution period is selected for execution. See [here](https://github.com/apache/airflow/pull/19130)
+### GCP-specific
 - Airflow's GCP connectors could ride on the REST API or Cloud Client Libraries, job configs between them are different and this means we need to supply different config to the Airflow connectors. For example, BigQueryInsertJobOperator's `configuration` parameter needs to be defined according to [REST API's requirement](https://cloud.google.com/bigquery/docs/reference/rest/v2/Job#jobconfiguration) whereas DataprocCreateBatchOperator makes use of Cloud Client Libraries and therefore the `batch` parameter needs to be defined according to [Cloud Client Libraries' requirement](https://cloud.google.com/python/docs/reference/dataproc/latest/google.cloud.dataproc_v1.types.Batch)
